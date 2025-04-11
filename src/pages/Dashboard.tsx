@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -17,7 +18,7 @@ import {
   Settings,
   User
 } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
@@ -69,10 +70,12 @@ const Dashboard = () => {
     { id: 3, title: "Problema eléctrico", location: "Plaza del Ayuntamiento, 5", status: "pending", date: "2025-04-07" },
   ];
 
-  const { logout } = useAuth();
-
   const handleLogout = () => {
-    logout();
+    toast.info("Sesión cerrada", {
+      description: "Has cerrado sesión correctamente",
+    });
+    // En una aplicación real, aquí se gestionaría el cierre de sesión
+    window.location.href = '/login';
   };
 
   return (
