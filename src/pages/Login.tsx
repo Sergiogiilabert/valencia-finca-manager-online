@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Lock, Mail, Eye, EyeOff } from 'lucide-react';
 import NavBar from '@/components/NavBar';
@@ -7,34 +7,44 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from "sonner";
+import { useAuth } from '@/contexts/AuthContext';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
+
+  // Redireccionar si ya está autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoggingIn(true);
 
     try {
-      // En un caso real, esto sería una petición a un backend
-      console.log("Intentando iniciar sesión con:", { email, password });
+      const success = await login(email, password);
       
-      // Simular una petición al backend
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Por ahora, aceptamos cualquier credencial para demostración
-      toast.success("Inicio de sesión exitoso", {
-        description: "Bienvenido/a al panel de administración",
-      });
-      
-      navigate('/dashboard');
+      if (success) {
+        toast.success("Inicio de sesión exitoso", {
+          description: "Bienvenido/a al panel de administración",
+        });
+        navigate('/dashboard');
+      } else {
+        toast.error("Error al iniciar sesión", {
+          description: "Correo electrónico o contraseña incorrectos",
+        });
+      }
     } catch (error) {
       toast.error("Error al iniciar sesión", {
-        description: "Por favor, verifica tus credenciales e inténtalo de nuevo",
+        description: "Ha ocurrido un error al procesar tu solicitud",
       });
     } finally {
       setIsLoggingIn(false);
@@ -117,6 +127,8 @@ const Login = () => {
                     id="remember_me"
                     name="remember_me"
                     type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
                     className="h-4 w-4 text-valencia-blue focus:ring-valencia-blue border-gray-300 rounded"
                   />
                   <label htmlFor="remember_me" className="ml-2 block text-sm text-gray-700">
