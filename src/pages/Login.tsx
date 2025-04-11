@@ -1,13 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Lock, Mail, Eye, EyeOff } from 'lucide-react';
+import { Lock, Mail, Eye, EyeOff, Shield } from 'lucide-react';
 import NavBar from '@/components/NavBar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from "sonner";
 import { useAuth } from '@/contexts/AuthContext';
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -15,6 +16,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [loginAttempts, setLoginAttempts] = useState(0);
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
 
@@ -38,9 +40,20 @@ const Login = () => {
         });
         navigate('/dashboard');
       } else {
-        toast.error("Error al iniciar sesión", {
-          description: "Correo electrónico o contraseña incorrectos",
-        });
+        // Incrementar contador de intentos fallidos
+        const newAttempts = loginAttempts + 1;
+        setLoginAttempts(newAttempts);
+        
+        // Mostrar mensaje de error
+        if (newAttempts >= 3) {
+          toast.error("Múltiples intentos fallidos", {
+            description: "Por seguridad, considera verificar tus credenciales o contactar a soporte",
+          });
+        } else {
+          toast.error("Error al iniciar sesión", {
+            description: "Correo electrónico o contraseña incorrectos",
+          });
+        }
       }
     } catch (error) {
       toast.error("Error al iniciar sesión", {
@@ -64,6 +77,15 @@ const Login = () => {
                 Introduce tus credenciales para acceder al sistema de gestión
               </p>
             </div>
+
+            <Alert className="mb-6 bg-blue-50 border-blue-200">
+              <Shield className="h-4 w-4 text-blue-500" />
+              <AlertTitle className="text-blue-700">Seguridad mejorada</AlertTitle>
+              <AlertDescription className="text-blue-600">
+                Este sistema cumple con GDPR. Tu sesión expirará automáticamente 
+                después de 2 horas por motivos de seguridad.
+              </AlertDescription>
+            </Alert>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-1">
