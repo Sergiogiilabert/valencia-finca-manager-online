@@ -1,7 +1,7 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { authService, User } from '../services/authService';
 import { toast } from "sonner";
+import { useNavigate } from 'react-router-dom';
 
 interface AuthContextType {
   user: User | null;
@@ -18,27 +18,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [sessionTimeRemaining, setSessionTimeRemaining] = useState<number | null>(null);
+  const navigate = useNavigate();
 
-  // Función para verificar y actualizar el estado de la sesión
   const checkSession = () => {
     const currentUser = authService.getCurrentUser();
     
-    // Si hay un usuario y tiene expiración
     if (currentUser && currentUser.sessionExpiry) {
       const expiry = new Date(currentUser.sessionExpiry);
       const now = new Date();
       const timeRemaining = expiry.getTime() - now.getTime();
       
-      // Si la sesión ha expirado
       if (timeRemaining <= 0) {
         setUser(null);
         setSessionTimeRemaining(null);
-        // No notificamos aquí porque authService.getCurrentUser() ya se encarga de limpiar
       } else {
         setUser(currentUser);
         setSessionTimeRemaining(timeRemaining);
         
-        // Notificar al usuario cuando queden 5 minutos
         if (timeRemaining <= 5 * 60 * 1000 && timeRemaining > 4.9 * 60 * 1000) {
           toast.warning("Sesión a punto de expirar", {
             description: "Tu sesión expirará en 5 minutos. Guarda tu trabajo.",
@@ -51,12 +47,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  // Verificar la sesión al cargar la aplicación
   useEffect(() => {
     checkSession();
     setIsLoading(false);
     
-    // Verificar la sesión periódicamente (cada minuto)
     const sessionInterval = setInterval(() => {
       checkSession();
     }, 60 * 1000);
@@ -68,7 +62,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const user = await authService.login(email, password);
     if (user) {
       setUser(user);
-      setSessionTimeRemaining(2 * 60 * 60 * 1000); // 2 horas en ms
+      setSessionTimeRemaining(2 * 60 * 60 * 1000);
       return true;
     }
     return false;
@@ -79,6 +73,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       authService.logout(user.email);
       setUser(null);
       setSessionTimeRemaining(null);
+      
+      navigate('/login');
+      
+      toast.success("Sesión cerrada", {
+        description: "Has cerrado sesión correctamente",
+      });
     }
   };
 
