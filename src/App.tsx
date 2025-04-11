@@ -14,6 +14,7 @@ import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import { ProtectedRouteProvider } from "./components/ProtectedRoute";
 
+// Crear una instancia del cliente de consulta
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -24,11 +25,14 @@ const App = () => (
           <Toaster />
           <Sonner />
           <Routes>
+            {/* Rutas públicas */}
             <Route path="/" element={<Index />} />
             <Route path="/servicios" element={<Servicios />} />
             <Route path="/contacto" element={<Contacto />} />
             <Route path="/cita" element={<Cita />} />
             <Route path="/login" element={<Login />} />
+            
+            {/* Ruta protegida */}
             <Route 
               path="/dashboard/*" 
               element={
@@ -37,6 +41,8 @@ const App = () => (
                 </ProtectedRouteProvider>
               } 
             />
+            
+            {/* Manejo de rutas no encontradas */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
