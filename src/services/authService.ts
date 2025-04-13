@@ -39,7 +39,12 @@ export const authService = {
 
   // Método para cerrar sesión
   logout: (): void => {
+    // Asegurarnos de eliminar completamente los datos del usuario del localStorage
     localStorage.removeItem('currentUser');
+    
+    // En caso de que haya otras claves relacionadas con la autenticación, podríamos limpiarlas aquí
+    // Por ejemplo, si hubiese tokens:
+    // localStorage.removeItem('authToken');
   },
 
   // Método para comprobar si hay un usuario logueado
