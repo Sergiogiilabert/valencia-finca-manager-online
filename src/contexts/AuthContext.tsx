@@ -42,8 +42,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const logout = () => {
     authService.logout();
     setUser(null);
-    // Redirigir al usuario a la página de login después de cerrar sesión
-    navigate('/login');
+    // Redirigir al usuario a la página de inicio después de cerrar sesión
+    navigate('/');
   };
 
   return (
