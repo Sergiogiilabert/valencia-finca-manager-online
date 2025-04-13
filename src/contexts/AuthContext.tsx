@@ -42,8 +42,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const logout = () => {
     authService.logout();
     setUser(null);
-    // Forzar la redirección a la página de inicio y asegurar que se actualice la navegación
-    navigate('/', { replace: true });
+    // Forzar la redirección a la página de login y asegurar que se actualice la navegación
+    navigate('/login', { replace: true });
   };
 
   return (
