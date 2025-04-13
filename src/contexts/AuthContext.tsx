@@ -1,6 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { authService, User } from '../services/authService';
+import { useNavigate } from 'react-router-dom';
 
 interface AuthContextType {
   user: User | null;
@@ -15,6 +16,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Recuperar información del usuario al cargar la aplicación
@@ -24,17 +26,24 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    const user = await authService.login(email, password);
-    if (user) {
-      setUser(user);
-      return true;
+    try {
+      const user = await authService.login(email, password);
+      if (user) {
+        setUser(user);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("Error durante el login:", error);
+      return false;
     }
-    return false;
   };
 
   const logout = () => {
     authService.logout();
     setUser(null);
+    // Redirigir al usuario a la página de login después de cerrar sesión
+    navigate('/login');
   };
 
   return (
