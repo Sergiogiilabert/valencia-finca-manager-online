@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   Calendar, 
   Users, 
@@ -49,7 +48,8 @@ import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 
 const Dashboard = () => {
-  // Datos de ejemplo para el dashboard
+  const navigate = useNavigate();
+
   const userTasks = [
     { id: 1, title: "Revisar presupuesto Finca Av. Blasco Ibáñez", status: "pending", priority: "high", due: "2025-04-09" },
     { id: 2, title: "Preparar junta ordinaria C/ Colón", status: "in-progress", priority: "medium", due: "2025-04-12" },
@@ -74,13 +74,15 @@ const Dashboard = () => {
     toast.info("Sesión cerrada", {
       description: "Has cerrado sesión correctamente",
     });
-    // En una aplicación real, aquí se gestionaría el cierre de sesión
     window.location.href = '/login';
+  };
+
+  const handleReturnHome = () => {
+    navigate('/');
   };
 
   return (
     <div className="min-h-screen bg-valencia-sand">
-      {/* Header */}
       <header className="bg-white border-b sticky top-0 z-30">
         <div className="container mx-auto px-4">
           <div className="h-16 flex items-center justify-between">
@@ -174,19 +176,27 @@ const Dashboard = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+
+              <Button 
+                variant="outline" 
+                size="icon" 
+                onClick={handleReturnHome} 
+                className="mr-2"
+                title="Volver a la página principal"
+              >
+                <Home className="h-5 w-5" />
+              </Button>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Dashboard Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-valencia-blue">Dashboard</h1>
           <p className="text-gray-600">Bienvenido/a de nuevo, Ana. Aquí está un resumen de la actividad reciente.</p>
         </div>
 
-        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {[
             { title: "Total Fincas", value: "42", icon: <Building className="h-8 w-8 text-valencia-blue" />, trend: "+2 este mes" },
@@ -208,7 +218,6 @@ const Dashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {/* Task List */}
           <Card className="lg:col-span-2">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-xl">Mis Tareas</CardTitle>
@@ -278,7 +287,6 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Upcoming Meetings */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-xl">Próximas Reuniones</CardTitle>
@@ -312,7 +320,6 @@ const Dashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Recent Incidents */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-xl">Incidencias Recientes</CardTitle>
@@ -343,7 +350,6 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Property Overview */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-xl">Estado de las Fincas</CardTitle>
@@ -371,7 +377,6 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Quick Access */}
           <Card>
             <CardHeader className="flex flex-row items-center pb-2">
               <CardTitle className="text-xl">Accesos Rápidos</CardTitle>
