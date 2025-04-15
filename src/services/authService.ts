@@ -1,4 +1,3 @@
-
 // Lista de empleados autorizados
 // En una aplicación real, esto estaría en una base de datos y las contraseñas estarían hasheadas
 const authorizedEmployees = [
@@ -39,18 +38,20 @@ export const authService = {
 
   // Método para cerrar sesión
   logout: (): void => {
-    // Asegurarnos de eliminar completamente los datos del usuario del localStorage
-    localStorage.removeItem('currentUser');
-    
-    // En caso de que haya otras claves relacionadas con la autenticación, podríamos limpiarlas aquí
-    // Por ejemplo, si hubiese tokens:
-    // localStorage.removeItem('authToken');
+    // Limpieza completa de todos los datos de autenticación
+    localStorage.clear(); // Limpiamos todo el localStorage para asegurar que no queden datos
   },
 
   // Método para comprobar si hay un usuario logueado
   getCurrentUser: (): User | null => {
-    const userStr = localStorage.getItem('currentUser');
-    return userStr ? JSON.parse(userStr) : null;
+    try {
+      const userStr = localStorage.getItem('currentUser');
+      return userStr ? JSON.parse(userStr) : null;
+    } catch {
+      // Si hay algún error al parsear, limpiamos el localStorage y retornamos null
+      localStorage.clear();
+      return null;
+    }
   },
 
   // Método para comprobar si el usuario está autenticado

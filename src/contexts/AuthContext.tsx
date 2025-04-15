@@ -19,10 +19,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Recuperar información del usuario al cargar la aplicación
-    const user = authService.getCurrentUser();
-    setUser(user);
-    setIsLoading(false);
+    // Verificar el estado de autenticación al cargar
+    const checkAuth = () => {
+      const currentUser = authService.getCurrentUser();
+      setUser(currentUser);
+      setIsLoading(false);
+    };
+    
+    checkAuth();
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
@@ -40,12 +44,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const logout = () => {
-    // Primero eliminamos los datos de usuario
+    // Primero limpiamos el estado y localStorage
     authService.logout();
     setUser(null);
     
-    // Redirigimos a la página de inicio (no a login)
-    // Usamos replace: true para evitar que puedan volver al dashboard con el botón atrás
+    // Redirigimos a la página de inicio y limpiamos el historial
     navigate('/', { replace: true });
   };
 
