@@ -2,7 +2,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { authService, User } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
-import { toast } from "sonner";
 
 interface AuthContextType {
   user: User | null;
@@ -20,14 +19,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Verificar el estado de autenticación al cargar
-    const checkAuth = () => {
-      const currentUser = authService.getCurrentUser();
-      setUser(currentUser);
-      setIsLoading(false);
-    };
-    
-    checkAuth();
+    // Recuperar información del usuario al cargar la aplicación
+    const user = authService.getCurrentUser();
+    setUser(user);
+    setIsLoading(false);
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
@@ -45,17 +40,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const logout = () => {
-    // Limpiamos el estado y localStorage
     authService.logout();
     setUser(null);
-    
-    // Mostramos notificación de cierre de sesión
-    toast.success("Sesión cerrada", {
-      description: "Has cerrado sesión correctamente",
-    });
-    
-    // Redirigimos a la página de inicio y limpiamos el historial
-    navigate('/', { replace: true });
+    // Redirigir al usuario a la página de login después de cerrar sesión
+    navigate('/login');
   };
 
   return (

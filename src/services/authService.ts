@@ -39,20 +39,13 @@ export const authService = {
 
   // Método para cerrar sesión
   logout: (): void => {
-    // Limpieza completa de todos los datos de autenticación
-    localStorage.clear(); // Limpiamos todo el localStorage para asegurar que no queden datos
+    localStorage.removeItem('currentUser');
   },
 
   // Método para comprobar si hay un usuario logueado
   getCurrentUser: (): User | null => {
-    try {
-      const userStr = localStorage.getItem('currentUser');
-      return userStr ? JSON.parse(userStr) : null;
-    } catch {
-      // Si hay algún error al parsear, limpiamos el localStorage y retornamos null
-      localStorage.clear();
-      return null;
-    }
+    const userStr = localStorage.getItem('currentUser');
+    return userStr ? JSON.parse(userStr) : null;
   },
 
   // Método para comprobar si el usuario está autenticado
