@@ -39,17 +39,34 @@ export const authService = {
 
   // Método para cerrar sesión
   logout: (): void => {
-    localStorage.removeItem('currentUser');
+    // Limpieza completa de localStorage
+    localStorage.clear();
   },
 
-  // Método para comprobar si hay un usuario logueado
+  // Método para comprobar el usuario actual
   getCurrentUser: (): User | null => {
-    const userStr = localStorage.getItem('currentUser');
-    return userStr ? JSON.parse(userStr) : null;
+    try {
+      const userStr = localStorage.getItem('currentUser');
+      if (!userStr) return null;
+      
+      const user = JSON.parse(userStr);
+      // Validación adicional del formato del usuario
+      if (!user.email || !user.role) {
+        localStorage.removeItem('currentUser');
+        return null;
+      }
+      
+      return user;
+    } catch (error) {
+      // Si hay algún error al parsear, limpiamos localStorage
+      localStorage.removeItem('currentUser');
+      return null;
+    }
   },
 
-  // Método para comprobar si el usuario está autenticado
+  // Método para comprobar autenticación
   isAuthenticated: (): boolean => {
-    return localStorage.getItem('currentUser') !== null;
+    const user = authService.getCurrentUser();
+    return user !== null;
   }
 };
