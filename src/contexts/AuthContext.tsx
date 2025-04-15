@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { authService, User } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
+import { toast } from "sonner";
 
 interface AuthContextType {
   user: User | null;
@@ -44,9 +45,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const logout = () => {
-    // Primero limpiamos el estado y localStorage
+    // Limpiamos el estado y localStorage
     authService.logout();
     setUser(null);
+    
+    // Mostramos notificación de cierre de sesión
+    toast.success("Sesión cerrada", {
+      description: "Has cerrado sesión correctamente",
+    });
     
     // Redirigimos a la página de inicio y limpiamos el historial
     navigate('/', { replace: true });

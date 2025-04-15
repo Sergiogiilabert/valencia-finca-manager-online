@@ -1,3 +1,4 @@
+
 // Lista de empleados autorizados
 // En una aplicación real, esto estaría en una base de datos y las contraseñas estarían hasheadas
 const authorizedEmployees = [
