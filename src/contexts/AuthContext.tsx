@@ -1,6 +1,7 @@
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { authService, User } from '../services/authService';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from "sonner";
 
 interface AuthContextType {
@@ -17,13 +18,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
 
+  // Check authentication status only on initial load and path changes
   useEffect(() => {
-    // Recuperar información del usuario al cargar la aplicación
-    const currentUser = authService.getCurrentUser();
-    setUser(currentUser);
-    setIsLoading(false);
-  }, []);
+    const checkAuth = () => {
+      const currentUser = authService.getCurrentUser();
+      setUser(currentUser);
+      setIsLoading(false);
+    };
+    
+    checkAuth();
+  }, [location.pathname]);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
@@ -40,14 +46,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const logout = () => {
-    // Primero limpiamos el estado y localStorage
-    authService.logout();
+    // Force complete cleanup
     setUser(null);
     
-    // Mostramos notificación de éxito
+    // Call the service to clear storage
+    authService.logout();
+    
+    // Show success notification
     toast.success("Sesión cerrada correctamente");
     
-    // Redirigimos a la página principal de forma inmediata
+    // Redirect to home with replace to prevent back navigation
     navigate('/', { replace: true });
   };
 
