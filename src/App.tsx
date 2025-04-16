@@ -49,9 +49,11 @@ const AppRoutes = () => (
         <Dashboard />
       </ProtectedRoute>
     }>
+      <Route index element={<Navigate to="/dashboard/databases" replace />} />
       <Route path="databases" element={<Databases />} />
       <Route path="accounting" element={<Accounting />} />
       <Route path="documents" element={<Documents />} />
+      <Route path="reports" element={<Reports />} />
     </Route>
     <Route path="*" element={<NotFound />} />
   </Routes>

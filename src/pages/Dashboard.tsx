@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, Outlet } from 'react-router-dom';
 import { 
   Calendar, 
   Users, 
@@ -91,10 +91,10 @@ const Dashboard = () => {
               </Link>
               <nav className="hidden md:flex space-x-8">
                 <Link to="/dashboard" className="text-valencia-blue font-medium">Dashboard</Link>
-                <Link to="/dashboard/fincas" className="text-gray-600 hover:text-valencia-blue">Fincas</Link>
-                <Link to="/dashboard/propietarios" className="text-gray-600 hover:text-valencia-blue">Propietarios</Link>
-                <Link to="/dashboard/contabilidad" className="text-gray-600 hover:text-valencia-blue">Contabilidad</Link>
-                <Link to="/dashboard/documentos" className="text-gray-600 hover:text-valencia-blue">Documentos</Link>
+                <Link to="/dashboard/databases" className="text-gray-600 hover:text-valencia-blue">Bases de Datos</Link>
+                <Link to="/dashboard/accounting" className="text-gray-600 hover:text-valencia-blue">Contabilidad</Link>
+                <Link to="/dashboard/documents" className="text-gray-600 hover:text-valencia-blue">Documentos</Link>
+                <Link to="/dashboard/reports" className="text-gray-600 hover:text-valencia-blue">Informes</Link>
               </nav>
             </div>
 
@@ -191,220 +191,7 @@ const Dashboard = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-valencia-blue">Dashboard</h1>
-          <p className="text-gray-600">Bienvenido/a de nuevo, Ana. Aquí está un resumen de la actividad reciente.</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {[
-            { title: "Total Fincas", value: "42", icon: <Building className="h-8 w-8 text-valencia-blue" />, trend: "+2 este mes" },
-            { title: "Propietarios", value: "1,250", icon: <Users className="h-8 w-8 text-valencia-orange" />, trend: "+15 este mes" },
-            { title: "Tareas Pendientes", value: "18", icon: <CheckCircle className="h-8 w-8 text-valencia-olive" />, trend: "-3 desde ayer" },
-            { title: "Incidencias Activas", value: "7", icon: <AlertCircle className="h-8 w-8 text-red-500" />, trend: "+2 hoy" },
-          ].map((stat, index) => (
-            <Card key={index}>
-              <CardContent className="p-6 flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-500">{stat.title}</p>
-                  <h3 className="text-3xl font-bold mt-1">{stat.value}</h3>
-                  <p className="text-xs text-gray-500 mt-1">{stat.trend}</p>
-                </div>
-                <div className="p-3 rounded-full bg-valencia-sand">{stat.icon}</div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          <Card className="lg:col-span-2">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-xl">Mis Tareas</CardTitle>
-              <Button variant="ghost" size="sm" className="text-valencia-blue">
-                Ver todas
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <Tabs defaultValue="pending">
-                <TabsList className="mb-4">
-                  <TabsTrigger value="pending">Pendientes</TabsTrigger>
-                  <TabsTrigger value="in-progress">En curso</TabsTrigger>
-                  <TabsTrigger value="completed">Completadas</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="pending">
-                  <div className="space-y-4">
-                    {userTasks.filter(task => task.status === "pending").map(task => (
-                      <div key={task.id} className="flex items-center p-3 bg-white rounded-lg border hover:shadow-sm transition-shadow">
-                        <div className={`h-2 w-2 rounded-full mr-3 ${
-                          task.priority === "high" ? "bg-red-500" : 
-                          task.priority === "medium" ? "bg-yellow-500" : "bg-green-500"
-                        }`} />
-                        <div className="flex-grow">
-                          <h4 className="font-medium text-gray-800">{task.title}</h4>
-                          <p className="text-xs text-gray-500">Vence: {new Date(task.due).toLocaleDateString()}</p>
-                        </div>
-                        <Button size="sm" variant="ghost">Empezar</Button>
-                      </div>
-                    ))}
-                  </div>
-                </TabsContent>
-                
-                <TabsContent value="in-progress">
-                  <div className="space-y-4">
-                    {userTasks.filter(task => task.status === "in-progress").map(task => (
-                      <div key={task.id} className="flex items-center p-3 bg-white rounded-lg border hover:shadow-sm transition-shadow">
-                        <div className={`h-2 w-2 rounded-full mr-3 ${
-                          task.priority === "high" ? "bg-red-500" : 
-                          task.priority === "medium" ? "bg-yellow-500" : "bg-green-500"
-                        }`} />
-                        <div className="flex-grow">
-                          <h4 className="font-medium text-gray-800">{task.title}</h4>
-                          <p className="text-xs text-gray-500">Vence: {new Date(task.due).toLocaleDateString()}</p>
-                        </div>
-                        <Button size="sm" className="bg-valencia-olive hover:bg-valencia-olive/90">Completar</Button>
-                      </div>
-                    ))}
-                  </div>
-                </TabsContent>
-                
-                <TabsContent value="completed">
-                  <div className="space-y-4">
-                    {userTasks.filter(task => task.status === "completed").map(task => (
-                      <div key={task.id} className="flex items-center p-3 bg-white rounded-lg border hover:shadow-sm transition-shadow">
-                        <div className="h-2 w-2 rounded-full mr-3 bg-gray-400" />
-                        <div className="flex-grow">
-                          <h4 className="font-medium text-gray-600 line-through">{task.title}</h4>
-                          <p className="text-xs text-gray-500">Completada: {new Date(task.due).toLocaleDateString()}</p>
-                        </div>
-                        <Button size="sm" variant="ghost" className="text-gray-400">Archivar</Button>
-                      </div>
-                    ))}
-                  </div>
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-xl">Próximas Reuniones</CardTitle>
-              <Button variant="ghost" size="sm" className="text-valencia-blue">
-                <Calendar className="h-4 w-4 mr-1" />
-                Calendario
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {upcomingMeetings.map((meeting) => (
-                  <div key={meeting.id} className="p-3 rounded-lg border hover:shadow-sm transition-shadow">
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-semibold">{meeting.title}</h4>
-                      <span className="text-xs bg-valencia-blue/10 text-valencia-blue px-2 py-0.5 rounded-full">
-                        {new Date(meeting.date).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600">{meeting.location}</p>
-                    <div className="flex justify-between mt-3">
-                      <span className="text-xs flex items-center text-gray-500">
-                        <Clock className="h-3 w-3 mr-1" /> {meeting.time}
-                      </span>
-                      <Button variant="outline" size="sm" className="h-7 text-xs">Detalles</Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-xl">Incidencias Recientes</CardTitle>
-              <Button variant="ghost" size="sm" className="text-valencia-blue">
-                Ver todas
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {recentIncidents.map((incident) => (
-                  <div key={incident.id} className="p-3 rounded-lg border hover:shadow-sm transition-shadow">
-                    <div className="flex justify-between items-center mb-2">
-                      <h4 className="font-medium">{incident.title}</h4>
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${
-                        incident.status === "resolved" ? "bg-green-100 text-green-800" : 
-                        incident.status === "in-progress" ? "bg-yellow-100 text-yellow-800" : 
-                        "bg-red-100 text-red-800"
-                      }`}>
-                        {incident.status === "resolved" ? "Resuelto" : 
-                         incident.status === "in-progress" ? "En progreso" : "Pendiente"}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600">{incident.location}</p>
-                    <p className="text-xs text-gray-500 mt-2">Reportado: {new Date(incident.date).toLocaleDateString()}</p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-xl">Estado de las Fincas</CardTitle>
-              <Button variant="ghost" size="sm" className="text-valencia-blue">
-                Detalles
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {[
-                  { name: "Cumplimiento Normativo", value: 92 },
-                  { name: "Salud Financiera", value: 85 },
-                  { name: "Estado Mantenimiento", value: 78 },
-                  { name: "Satisfacción Propietarios", value: 89 }
-                ].map((item, i) => (
-                  <div key={i} className="space-y-1">
-                    <div className="flex justify-between text-sm">
-                      <span>{item.name}</span>
-                      <span className="font-medium">{item.value}%</span>
-                    </div>
-                    <Progress value={item.value} className="h-2" />
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center pb-2">
-              <CardTitle className="text-xl">Accesos Rápidos</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4">
-                {[
-                  { icon: <FileText className="h-6 w-6" />, name: "Documentos", href: "/dashboard/documentos" },
-                  { icon: <BarChart className="h-6 w-6" />, name: "Informes", href: "/dashboard/informes" },
-                  { icon: <Calendar className="h-6 w-6" />, name: "Calendario", href: "/dashboard/calendario" },
-                  { icon: <Database className="h-6 w-6" />, name: "Base de datos", href: "/dashboard/database" },
-                  { icon: <Home className="h-6 w-6" />, name: "Web pública", href: "/" },
-                  { icon: <Settings className="h-6 w-6" />, name: "Configuración", href: "/dashboard/settings" },
-                ].map((item, i) => (
-                  <Link 
-                    key={i} 
-                    to={item.href}
-                    className="flex flex-col items-center justify-center p-4 border rounded-lg hover:bg-valencia-sand transition-colors"
-                  >
-                    <div className="p-2 rounded-full bg-valencia-sand mb-2">
-                      {item.icon}
-                    </div>
-                    <span className="text-sm font-medium">{item.name}</span>
-                  </Link>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <Outlet />
       </main>
     </div>
   );
