@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,6 +14,7 @@ import Dashboard from "./pages/Dashboard";
 import Databases from "./pages/dashboard/Databases";
 import Accounting from "./pages/dashboard/Accounting";
 import Documents from "./pages/dashboard/Documents";
+import Reports from "./pages/dashboard/Reports";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
