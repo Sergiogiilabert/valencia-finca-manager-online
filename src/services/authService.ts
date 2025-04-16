@@ -45,6 +45,7 @@ export const authService = {
     localStorage.removeItem(STORAGE_KEY);
     
     // También hacemos una limpieza general por si acaso
+    localStorage.clear();
     sessionStorage.clear();
     
     // Si hay otras cookies de autenticación, las limpiamos también

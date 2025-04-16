@@ -46,9 +46,11 @@ import {
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const userTasks = [
     { id: 1, title: "Revisar presupuesto Finca Av. Blasco Ibáñez", status: "pending", priority: "high", due: "2025-04-09" },
@@ -71,10 +73,7 @@ const Dashboard = () => {
   ];
 
   const handleLogout = () => {
-    toast.info("Sesión cerrada", {
-      description: "Has cerrado sesión correctamente",
-    });
-    window.location.href = '/login';
+    logout();
   };
 
   const handleReturnHome = () => {
