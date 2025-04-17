@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from "sonner";
+import LocationMap from '@/components/LocationMap';
 import { 
   MapPin, 
   Phone, 
@@ -213,16 +214,12 @@ const Contacto = () => {
             <div className="mt-16">
               <h2 className="text-2xl font-semibold text-valencia-blue mb-6 text-center">Nuestra Ubicación</h2>
               <div className="bg-white p-4 rounded-lg shadow-md">
-                <div className="aspect-[16/9] bg-gray-200 rounded overflow-hidden">
-                  {/* Aquí iría un mapa real - usando un placeholder por ahora */}
-                  <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500">
-                    <div className="text-center">
-                      <MapPin className="h-12 w-12 mx-auto mb-2 text-valencia-blue" />
-                      <p className="font-medium">Mapa de ubicación de ValenciaFincas</p>
-                      <p className="text-sm">Av. Reino de Valencia, 12, 46005 Valencia</p>
-                    </div>
-                  </div>
-                </div>
+                <LocationMap 
+                  longitude={-0.368277}
+                  latitude={39.469749}
+                  zoom={15}
+                  address="Av. Reino de Valencia, 12, 46005 Valencia"
+                />
               </div>
             </div>
           </div>
