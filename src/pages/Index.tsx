@@ -189,7 +189,12 @@ const Index = () => {
                   <span>Reservar Cita</span>
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="border-valencia-sand text-valencia-sand hover:bg-valencia-sand/10">
+              <Button 
+                asChild 
+                variant="outline" 
+                size="lg" 
+                className="border-2 border-[#1EAEDB] text-[#1EAEDB] hover:bg-[#1EAEDB]/10 transition-colors duration-300 ease-in-out"
+              >
                 <Link to="/contacto" className="flex items-center gap-2">
                   <Phone className="h-5 w-5" />
                   <span>Contactar</span>
@@ -206,3 +211,4 @@ const Index = () => {
 };
 
 export default Index;
+
