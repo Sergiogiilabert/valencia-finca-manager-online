@@ -32,10 +32,13 @@ const Index = () => {
             </div>
           </div>
           <div className="relative h-[300px] md:h-[400px] rounded-lg overflow-hidden shadow-xl">
-            {/* Placeholder para imagen - en producción se reemplazaría con una imagen real */}
-            <div className="absolute inset-0 bg-gradient-to-br from-valencia-blue to-valencia-blue/50 flex items-center justify-center text-white text-xl font-semibold">
-              <Building size={60} className="mr-2" />
-              <span>Imagen de Edificio en Valencia</span>
+            <img 
+              src="https://images.unsplash.com/photo-1518005020951-eccb494ad742" 
+              alt="Edificio de apartamentos en Valencia" 
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end justify-start p-6">
+              <span className="text-white text-xl font-semibold">Finca en Avenida Blasco Ibáñez, Valencia</span>
             </div>
           </div>
         </div>
