@@ -1,150 +1,69 @@
 
-import React, { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import React from 'react';
 import { MapPin } from 'lucide-react';
 
 interface LocationMapProps {
-  longitude?: number;
-  latitude?: number;
-  zoom?: number;
   address?: string;
 }
 
 const LocationMap = ({
-  longitude = -0.368277, // Default coordinates for Valencia
-  latitude = 39.469749,
-  zoom = 15,
   address = "Av. Reino de Valencia, 12, 46005 Valencia"
 }: LocationMapProps) => {
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const marker = useRef<mapboxgl.Marker | null>(null);
-  const [mapboxToken, setMapboxToken] = useState<string>('');
-  const [isMapLoaded, setIsMapLoaded] = useState(false);
-
-  // In a real application, you would get this from an environment variable
-  // For this demo, we'll use a state variable that can be set by the user
-  const handleTokenSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const input = e.currentTarget.elements.namedItem('mapboxToken') as HTMLInputElement;
-    if (input && input.value) {
-      setMapboxToken(input.value);
-      localStorage.setItem('mapbox_token', input.value);
-    }
-  };
-
-  useEffect(() => {
-    // Try to get token from localStorage
-    const savedToken = localStorage.getItem('mapbox_token');
-    if (savedToken) {
-      setMapboxToken(savedToken);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!mapboxToken || !mapContainer.current || map.current) return;
-
-    mapboxgl.accessToken = mapboxToken;
-    
-    try {
-      map.current = new mapboxgl.Map({
-        container: mapContainer.current,
-        style: 'mapbox://styles/mapbox/streets-v12',
-        center: [longitude, latitude],
-        zoom: zoom,
-        attributionControl: false,
-      });
-
-      map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
-      map.current.addControl(new mapboxgl.AttributionControl({ compact: true }));
-
-      map.current.on('load', () => {
-        setIsMapLoaded(true);
-        
-        // Add marker at the specified location
-        if (!marker.current) {
-          const el = document.createElement('div');
-          el.className = 'custom-marker';
-          el.innerHTML = `
-            <div class="bg-valencia-blue text-white p-2 rounded-full shadow-lg">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M20 10c0 4.418-8 12-8 12s-8-7.582-8-12a8 8 0 1 1 16 0z" fill="#FF6B35"/>
-                <circle cx="12" cy="10" r="3" fill="white"/>
-              </svg>
-            </div>
-          `;
-          
-          marker.current = new mapboxgl.Marker(el)
-            .setLngLat([longitude, latitude])
-            .setPopup(
-              new mapboxgl.Popup({ offset: 25 })
-                .setHTML(`<strong>ValenciaFincas</strong><br>${address}`)
-            )
-            .addTo(map.current);
-        }
-      });
-    } catch (error) {
-      console.error("Error initializing map:", error);
-      setMapboxToken('');
-    }
-
-    return () => {
-      if (map.current) {
-        map.current.remove();
-        map.current = null;
-      }
-      if (marker.current) {
-        marker.current = null;
-      }
-    };
-  }, [longitude, latitude, zoom, address, mapboxToken]);
-
-  if (!mapboxToken) {
-    return (
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <div className="text-center mb-4">
-          <MapPin className="h-12 w-12 mx-auto mb-2 text-valencia-blue" />
-          <h3 className="text-lg font-medium text-gray-800">Configurar Mapa</h3>
-          <p className="text-sm text-gray-600 mb-4">
-            Para ver el mapa, introduce tu token público de Mapbox.
-            Puedes obtenerlo creando una cuenta en <a href="https://www.mapbox.com" target="_blank" rel="noopener noreferrer" className="text-valencia-orange hover:underline">mapbox.com</a>
-          </p>
-        </div>
-        <form onSubmit={handleTokenSubmit} className="space-y-3">
-          <div>
-            <input
-              type="text"
-              name="mapboxToken"
-              placeholder="Introduce tu token público de Mapbox"
-              className="w-full p-2 border border-gray-300 rounded"
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              Este token se guardará en tu navegador para futuras visitas.
-            </p>
-          </div>
-          <button 
-            type="submit"
-            className="w-full bg-valencia-orange hover:bg-valencia-orange/90 text-white py-2 rounded"
-          >
-            Mostrar Mapa
-          </button>
-        </form>
-      </div>
-    );
-  }
-
   return (
     <div className="w-full h-[400px] relative rounded-lg overflow-hidden shadow-md">
-      <div ref={mapContainer} className="absolute inset-0" />
-      {!isMapLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-          <div className="text-center">
-            <MapPin className="h-8 w-8 mx-auto mb-2 text-valencia-blue animate-pulse" />
-            <p className="text-gray-600">Cargando mapa...</p>
+      {/* Static map image that looks like Google Maps */}
+      <div className="absolute inset-0 bg-[#e5e3df] overflow-hidden">
+        {/* Map grid lines */}
+        <div className="absolute inset-0" style={{
+          backgroundImage: `
+            linear-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px)
+          `,
+          backgroundSize: '50px 50px'
+        }}></div>
+        
+        {/* Main roads */}
+        <div className="absolute left-0 top-1/2 w-full h-8 bg-[#fffbe5] transform -translate-y-1/2"></div>
+        <div className="absolute left-1/2 top-0 w-10 h-full bg-[#fffbe5] transform -translate-x-1/2"></div>
+        
+        {/* Secondary roads */}
+        <div className="absolute left-0 top-1/4 w-full h-4 bg-[#f8f8f8] transform -translate-y-1/2"></div>
+        <div className="absolute left-1/4 top-0 w-4 h-full bg-[#f8f8f8] transform -translate-x-1/2"></div>
+        <div className="absolute left-0 top-3/4 w-full h-4 bg-[#f8f8f8] transform -translate-y-1/2"></div>
+        <div className="absolute left-3/4 top-0 w-4 h-full bg-[#f8f8f8] transform -translate-x-1/2"></div>
+        
+        {/* Buildings - random blocks to simulate city blocks */}
+        <div className="absolute left-[25%] top-[20%] w-[60px] h-[40px] bg-[#d9d9d9] rounded-sm"></div>
+        <div className="absolute left-[35%] top-[20%] w-[40px] h-[40px] bg-[#d9d9d9] rounded-sm"></div>
+        <div className="absolute left-[25%] top-[32%] w-[50px] h-[50px] bg-[#d9d9d9] rounded-sm"></div>
+        <div className="absolute left-[60%] top-[25%] w-[70px] h-[40px] bg-[#d9d9d9] rounded-sm"></div>
+        <div className="absolute left-[60%] top-[35%] w-[40px] h-[40px] bg-[#d9d9d9] rounded-sm"></div>
+        <div className="absolute left-[20%] top-[60%] w-[50px] h-[60px] bg-[#d9d9d9] rounded-sm"></div>
+        <div className="absolute left-[65%] top-[60%] w-[60px] h-[50px] bg-[#d9d9d9] rounded-sm"></div>
+        
+        {/* Parks - green areas */}
+        <div className="absolute left-[20%] top-[45%] w-[80px] h-[60px] bg-[#c8d7c5] rounded-md"></div>
+        <div className="absolute left-[70%] top-[70%] w-[60px] h-[60px] bg-[#c8d7c5] rounded-md"></div>
+        
+        {/* Valencia Fincas location - highlighted building */}
+        <div className="absolute left-[48%] top-[48%] w-[70px] h-[50px] bg-[#ff6b35] rounded-sm shadow-md"></div>
+        
+        {/* Location pin with shadow */}
+        <div className="absolute left-1/2 top-1/2 -ml-6 -mt-16 text-white filter drop-shadow-lg">
+          <div className="relative">
+            <div className="absolute -inset-1 bg-valencia-blue opacity-25 rounded-full blur-sm"></div>
+            <div className="relative bg-valencia-blue text-white p-2 rounded-full shadow-lg">
+              <MapPin className="h-8 w-8" />
+            </div>
           </div>
         </div>
-      )}
+      </div>
+      
+      {/* Address popup in Google Maps style */}
+      <div className="absolute left-1/2 bottom-6 transform -translate-x-1/2 bg-white py-2 px-4 rounded shadow-lg max-w-[80%]">
+        <h3 className="font-medium text-sm">ValenciaFincas</h3>
+        <p className="text-gray-600 text-xs">{address}</p>
+      </div>
     </div>
   );
 };
